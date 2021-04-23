@@ -1,5 +1,5 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
+﻿using IdentitySample.Authentication;
+using IdentitySample.Authentication.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentitySample.Controllers
@@ -8,11 +8,14 @@ namespace IdentitySample.Controllers
     [ApiController]
     public class MeController : ControllerBase
     {
-        [Authorize(Roles = "Administrator")]
         [HttpGet]
         public IActionResult GetMe()
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var applicationId = User.GetApplicationId();
+            var userId = User.GetId();
+            var isAdmninistrator = User.IsInRole(RoleNames.Administrator);
+            var roles = User.GetRoles();
+
             return NoContent();
         }
     }

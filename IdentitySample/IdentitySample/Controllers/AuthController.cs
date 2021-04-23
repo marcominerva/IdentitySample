@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using IdentitySample.BusinessLayer.Services;
 using IdentitySample.Shared.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentitySample.Controllers
@@ -17,6 +18,7 @@ namespace IdentitySample.Controllers
         }
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginRequest request)
         {
             var response = await identityService.LoginAsync(request);

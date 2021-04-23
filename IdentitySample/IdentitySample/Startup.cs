@@ -1,13 +1,17 @@
 using System;
 using System.Text;
+using IdentitySample.Authentication;
+using IdentitySample.Authentication.Requirements;
 using IdentitySample.BusinessLayer.Services;
 using IdentitySample.BusinessLayer.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
@@ -76,6 +80,35 @@ namespace IdentitySample
                     RequireExpirationTime = true,
                     ClockSkew = TimeSpan.Zero
                 };
+            });
+
+            services.AddSingleton<IAuthorizationHandler, MinimumAgeHandler>();
+
+            services.AddAuthorization(options =>
+            {
+                options.FallbackPolicy = options.DefaultPolicy;
+
+                options.AddPolicy("SuperApplication", policy =>
+                {
+                    //policy.RequireClaim(ClaimTypes.Role, RoleNames.Administrator, RoleNames.PowerUser);
+                    //policy.RequireRole(RoleNames.Administrator, RoleNames.PowerUser);
+                    policy.RequireClaim(CustomClaimTypes.ApplicationId, "42");
+                });
+
+                options.AddPolicy("TaggiaUser", policy =>
+                {
+                    policy.RequireClaim(JwtRegisteredClaimNames.Iss, "Taggia");
+                });
+
+                options.AddPolicy("18", policy =>
+                {
+                    policy.Requirements.Add(new MinimumAgeRequirement(18));
+                });
+
+                options.AddPolicy("21", policy =>
+                {
+                    policy.Requirements.Add(new MinimumAgeRequirement(21));
+                });
             });
 
             services.AddScoped<IIdentityService, IdentityService>();

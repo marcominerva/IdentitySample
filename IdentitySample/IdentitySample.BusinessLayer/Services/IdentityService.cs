@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using IdentitySample.Authentication;
 using IdentitySample.BusinessLayer.Settings;
 using IdentitySample.Shared.Models;
 using Microsoft.Extensions.Options;
@@ -23,13 +25,19 @@ namespace IdentitySample.BusinessLayer.Services
         {
             if (request.UserName == request.Password)
             {
-                var claims = new[]
+                var claims = new List<Claim>()
                 {
                     new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()),
                     new Claim(ClaimTypes.Name, request.UserName),
-                    new Claim(ClaimTypes.Role, "Administrator"),
-                    new Claim(ClaimTypes.Role, "PowerUser")
+                    new Claim(ClaimTypes.Role, RoleNames.Administrator),
+                    new Claim(ClaimTypes.Role, RoleNames.PowerUser)
                 };
+
+                if (request.UserName == "marco")
+                {
+                    claims.Add(new Claim(CustomClaimTypes.ApplicationId, "42"));
+                    claims.Add(new Claim(CustomClaimTypes.Age, "40"));
+                }
 
                 var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecurityKey));
                 var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);

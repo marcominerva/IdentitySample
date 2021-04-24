@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
@@ -90,22 +89,20 @@ namespace IdentitySample
 
                 options.AddPolicy("SuperApplication", policy =>
                 {
-                    //policy.RequireClaim(ClaimTypes.Role, RoleNames.Administrator, RoleNames.PowerUser);
-                    //policy.RequireRole(RoleNames.Administrator, RoleNames.PowerUser);
                     policy.RequireClaim(CustomClaimTypes.ApplicationId, "42");
                 });
 
-                options.AddPolicy("TaggiaUser", policy =>
+                options.AddPolicy("AdministratorOrPowerUser", policy =>
                 {
-                    policy.RequireClaim(JwtRegisteredClaimNames.Iss, "Taggia");
+                    policy.RequireRole(RoleNames.Administrator, RoleNames.PowerUser);
                 });
 
-                options.AddPolicy("18", policy =>
+                options.AddPolicy("AtLeast18", policy =>
                 {
                     policy.Requirements.Add(new MinimumAgeRequirement(18));
                 });
 
-                options.AddPolicy("21", policy =>
+                options.AddPolicy("AtLeast21", policy =>
                 {
                     policy.Requirements.Add(new MinimumAgeRequirement(21));
                 });

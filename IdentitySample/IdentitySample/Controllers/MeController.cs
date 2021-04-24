@@ -1,5 +1,6 @@
 ﻿using IdentitySample.Authentication;
 using IdentitySample.Authentication.Extensions;
+using IdentitySample.Authentication.Filters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentitySample.Controllers
@@ -9,6 +10,7 @@ namespace IdentitySample.Controllers
     public class MeController : ControllerBase
     {
         [HttpGet]
+        [RoleAuthorize(RoleNames.Administrator, RoleNames.PowerUser)]
         public IActionResult GetMe()
         {
             var applicationId = User.GetApplicationId();

@@ -7,14 +7,14 @@ namespace IdentitySample.Controllers
     [ApiController]
     public class AgeController : ControllerBase
     {
-        [HttpGet]
+        [HttpGet("18")]
         [Authorize(Policy = "AtLeast18")]
         public IActionResult AtLeast18()
         {
             return NoContent();
         }
 
-        [HttpGet]
+        [HttpGet("21")]
         [Authorize(Policy = "AtLeast21")]
         public IActionResult AtLeast21()
         {

@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentitySample.BusinessLaye
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentitySample.Shared", "IdentitySample.Shared\IdentitySample.Shared.csproj", "{32C5B238-8AFB-4E14-86B4-976248E69CA3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentitySample.Authentication", "IdentitySample.Authentication\IdentitySample.Authentication.csproj", "{EE56978E-86F1-485B-A8A0-B43730C24BFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentitySample.Authentication", "IdentitySample.Authentication\IdentitySample.Authentication.csproj", "{EE56978E-86F1-485B-A8A0-B43730C24BFE}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "IdentitySample.Database", "IdentitySample.Database\IdentitySample.Database.sqlproj", "{30E7860A-1055-4C16-82CE-6507BDF2642C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,12 @@ Global
 		{EE56978E-86F1-485B-A8A0-B43730C24BFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE56978E-86F1-485B-A8A0-B43730C24BFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE56978E-86F1-485B-A8A0-B43730C24BFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30E7860A-1055-4C16-82CE-6507BDF2642C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30E7860A-1055-4C16-82CE-6507BDF2642C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30E7860A-1055-4C16-82CE-6507BDF2642C}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{30E7860A-1055-4C16-82CE-6507BDF2642C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30E7860A-1055-4C16-82CE-6507BDF2642C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30E7860A-1055-4C16-82CE-6507BDF2642C}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

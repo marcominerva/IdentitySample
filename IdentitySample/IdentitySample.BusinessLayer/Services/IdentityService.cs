@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using IdentitySample.Authentication;
+using IdentitySample.Authentication.Entities;
 using IdentitySample.BusinessLayer.Settings;
 using IdentitySample.Shared.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -15,10 +18,14 @@ namespace IdentitySample.BusinessLayer.Services
     public class IdentityService : IIdentityService
     {
         private readonly JwtSettings jwtSettings;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly SignInManager<ApplicationUser> signInManager;
 
-        public IdentityService(IOptions<JwtSettings> jwtSettingsOptions)
+        public IdentityService(IOptions<JwtSettings> jwtSettingsOptions, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             jwtSettings = jwtSettingsOptions.Value;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
         }
 
         public Task<AuthResponse> LoginAsync(LoginRequest request)
@@ -52,6 +59,26 @@ namespace IdentitySample.BusinessLayer.Services
             }
 
             return Task.FromResult<AuthResponse>(null);
+        }
+
+        public async Task<RegisterResponse> RegisterAsync(RegisterRequest request)
+        {
+            var user = new ApplicationUser
+            {
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Email = request.Email,
+                UserName = request.Email
+            };
+
+            var result = await userManager.CreateAsync(user, request.Password);
+            var response = new RegisterResponse
+            {
+                Succeeded = result.Succeeded,
+                Errors = result.Errors.Select(e => e.Description)
+            };
+
+            return response;
         }
     }
 }

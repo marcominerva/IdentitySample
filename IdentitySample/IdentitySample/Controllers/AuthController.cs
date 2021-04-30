@@ -2,6 +2,7 @@
 using IdentitySample.BusinessLayer.Services;
 using IdentitySample.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentitySample.Controllers
@@ -28,6 +29,23 @@ namespace IdentitySample.Controllers
             }
 
             return BadRequest();
+        }
+
+        [HttpPost("register")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Register(RegisterRequest request)
+        {
+            var response = await identityService.RegisterAsync(request);
+
+            return StatusCode(response.Succeeded ? StatusCodes.Status200OK : StatusCodes.Status400BadRequest,
+                response);
+
+            //if (response.Succeeded)
+            //{
+            //    return Ok(response);
+            //}
+
+            //return BadRequest(response);
         }
     }
 }

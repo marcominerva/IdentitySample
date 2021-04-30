@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using IdentitySample.Authentication;
+using IdentitySample.Authentication.Entities;
 using IdentitySample.Authentication.Requirements;
 using IdentitySample.BusinessLayer.Services;
 using IdentitySample.BusinessLayer.Settings;
@@ -8,6 +9,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -59,6 +62,24 @@ namespace IdentitySample
                     }
                 });
             });
+
+            services.AddDbContext<AuthenticationDbContext>(options =>
+            {
+                var connectionString = Configuration.GetConnectionString("SqlConnection");
+                options.UseSqlServer(connectionString);
+            });
+
+            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+            })
+            .AddEntityFrameworkStores<AuthenticationDbContext>()
+            .AddDefaultTokenProviders();
 
             services.AddAuthentication(options =>
             {

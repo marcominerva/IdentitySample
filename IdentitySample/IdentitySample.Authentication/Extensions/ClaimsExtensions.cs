@@ -14,6 +14,15 @@ namespace IdentitySample.Authentication.Extensions
             return Guid.Parse(value);
         }
 
+        public static string GetFirstName(this IPrincipal user)
+            => GetClaimValue(user, ClaimTypes.GivenName);
+
+        public static string GetLastName(this IPrincipal user)
+            => GetClaimValue(user, ClaimTypes.Surname);
+
+        public static string GetEmail(this IPrincipal user)
+            => GetClaimValue(user, ClaimTypes.Email);
+
         public static int GetApplicationId(this IPrincipal user)
         {
             var value = GetClaimValue(user, CustomClaimTypes.ApplicationId);

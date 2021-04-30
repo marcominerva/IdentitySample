@@ -103,10 +103,18 @@ namespace IdentitySample
             });
 
             services.AddSingleton<IAuthorizationHandler, MinimumAgeHandler>();
+            services.AddScoped<IAuthorizationHandler, UserActiveHandler>();
 
             services.AddAuthorization(options =>
             {
-                options.FallbackPolicy = options.DefaultPolicy;
+                var policyBuilder = new AuthorizationPolicyBuilder().RequireAuthenticatedUser();
+                policyBuilder.Requirements.Add(new UserActiveRequirement());
+                options.FallbackPolicy = policyBuilder.Build();
+
+                //options.AddPolicy("UserActive", policy =>
+                //{
+                //    policy.Requirements.Add(new UserActiveRequirement());
+                //});
 
                 options.AddPolicy("SuperApplication", policy =>
                 {

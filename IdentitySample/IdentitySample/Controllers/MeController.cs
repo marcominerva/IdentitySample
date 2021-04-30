@@ -1,6 +1,5 @@
-﻿using IdentitySample.Authentication;
-using IdentitySample.Authentication.Extensions;
-using IdentitySample.Authentication.Filters;
+﻿using IdentitySample.Authentication.Extensions;
+using IdentitySample.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentitySample.Controllers
@@ -10,15 +9,16 @@ namespace IdentitySample.Controllers
     public class MeController : ControllerBase
     {
         [HttpGet]
-        [RoleAuthorize(RoleNames.Administrator, RoleNames.PowerUser)]
         public IActionResult GetMe()
         {
-            var applicationId = User.GetApplicationId();
-            var userId = User.GetId();
-            var isAdmninistrator = User.IsInRole(RoleNames.Administrator);
-            var roles = User.GetRoles();
+            var user = new User
+            {
+                FirstName = User.GetFirstName(),
+                LastName = User.GetLastName(),
+                Email = User.GetEmail()
+            };
 
-            return NoContent();
+            return Ok(user);
         }
     }
 }

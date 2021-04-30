@@ -5,7 +5,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using IdentitySample.Authentication;
 using IdentitySample.Authentication.Entities;
 using IdentitySample.BusinessLayer.Settings;
 using IdentitySample.Shared.Models;
@@ -28,37 +27,34 @@ namespace IdentitySample.BusinessLayer.Services
             this.signInManager = signInManager;
         }
 
-        public Task<AuthResponse> LoginAsync(LoginRequest request)
+        public async Task<AuthResponse> LoginAsync(LoginRequest request)
         {
-            if (request.UserName == request.Password)
+            var signInResult = await signInManager.PasswordSignInAsync(request.UserName, request.Password, false, false);
+            if (!signInResult.Succeeded)
             {
-                var claims = new List<Claim>()
-                {
-                    new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()),
-                    new Claim(ClaimTypes.Name, request.UserName),
-                    new Claim(ClaimTypes.Role, RoleNames.Administrator),
-                    new Claim(ClaimTypes.Role, RoleNames.PowerUser)
-                };
-
-                if (request.UserName == "marco")
-                {
-                    claims.Add(new Claim(CustomClaimTypes.ApplicationId, "42"));
-                    claims.Add(new Claim(CustomClaimTypes.Age, "40"));
-                }
-
-                var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecurityKey));
-                var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
-
-                var jwtSecurityToken = new JwtSecurityToken(jwtSettings.Issuer, jwtSettings.Audience, claims,
-                    DateTime.UtcNow, DateTime.UtcNow.AddDays(10), signingCredentials);
-
-                var accessToken = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
-
-                var response = new AuthResponse { AccessToken = accessToken };
-                return Task.FromResult(response);
+                return null;
             }
 
-            return Task.FromResult<AuthResponse>(null);
+            var user = await userManager.FindByNameAsync(request.UserName);
+            var claims = new List<Claim>()
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, request.UserName),
+                    new Claim(ClaimTypes.GivenName, user.FirstName),
+                    new Claim(ClaimTypes.Surname, user.LastName ?? string.Empty),
+                    new Claim(ClaimTypes.Email, user.Email)
+                };
+
+            var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecurityKey));
+            var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
+
+            var jwtSecurityToken = new JwtSecurityToken(jwtSettings.Issuer, jwtSettings.Audience, claims,
+                DateTime.UtcNow, DateTime.UtcNow.AddDays(10), signingCredentials);
+
+            var accessToken = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+
+            var response = new AuthResponse { AccessToken = accessToken };
+            return response;
         }
 
         public async Task<RegisterResponse> RegisterAsync(RegisterRequest request)

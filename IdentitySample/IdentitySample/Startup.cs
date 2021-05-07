@@ -5,6 +5,7 @@ using IdentitySample.Authentication.Entities;
 using IdentitySample.Authentication.Requirements;
 using IdentitySample.BusinessLayer.Services;
 using IdentitySample.BusinessLayer.Settings;
+using IdentitySample.StartupTasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -137,7 +138,15 @@ namespace IdentitySample
                 });
             });
 
+            // Uncomment if you want to use the old password hashing format for both login and registration.
+            //services.Configure<PasswordHasherOptions>(options =>
+            //{
+            //    options.CompatibilityMode = PasswordHasherCompatibilityMode.IdentityV2;
+            //});
+
             services.AddScoped<IIdentityService, IdentityService>();
+
+            services.AddHostedService<AuthenticationStartupTask>();
 
             T Configure<T>(string sectionName) where T : class
             {

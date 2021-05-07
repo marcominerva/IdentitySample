@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using IdentitySample.Authentication;
 using IdentitySample.Authentication.Entities;
 using IdentitySample.BusinessLayer.Settings;
 using IdentitySample.Shared.Models;
@@ -36,6 +37,8 @@ namespace IdentitySample.BusinessLayer.Services
             }
 
             var user = await userManager.FindByNameAsync(request.UserName);
+            var userRoles = await userManager.GetRolesAsync(user);
+
             var claims = new List<Claim>()
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
@@ -43,7 +46,7 @@ namespace IdentitySample.BusinessLayer.Services
                     new Claim(ClaimTypes.GivenName, user.FirstName),
                     new Claim(ClaimTypes.Surname, user.LastName ?? string.Empty),
                     new Claim(ClaimTypes.Email, user.Email)
-                };
+                }.Union(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
 
             var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecurityKey));
             var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
@@ -68,6 +71,11 @@ namespace IdentitySample.BusinessLayer.Services
             };
 
             var result = await userManager.CreateAsync(user, request.Password);
+            if (result.Succeeded)
+            {
+                result = await userManager.AddToRoleAsync(user, RoleNames.User);
+            }
+
             var response = new RegisterResponse
             {
                 Succeeded = result.Succeeded,

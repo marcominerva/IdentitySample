@@ -8,6 +8,7 @@ namespace IdentitySample.Controllers
     [ApiController]
     public class MeController : ControllerBase
     {
+        //[Authorize]
         [HttpGet]
         public IActionResult GetMe()
         {

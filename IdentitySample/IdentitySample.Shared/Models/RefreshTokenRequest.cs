@@ -1,6 +1,6 @@
 ﻿namespace IdentitySample.Shared.Models
 {
-    public class AuthResponse
+    public class RefreshTokenRequest
     {
         public string AccessToken { get; set; }
 

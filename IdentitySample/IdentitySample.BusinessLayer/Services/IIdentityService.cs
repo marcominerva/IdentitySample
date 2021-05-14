@@ -8,5 +8,7 @@ namespace IdentitySample.BusinessLayer.Services
         Task<RegisterResponse> RegisterAsync(RegisterRequest request);
 
         Task<AuthResponse> LoginAsync(LoginRequest request);
+
+        Task<AuthResponse> RefreshTokenAsync(RefreshTokenRequest request);
     }
 }

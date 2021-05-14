@@ -31,6 +31,19 @@ namespace IdentitySample.Controllers
             return BadRequest();
         }
 
+        [AllowAnonymous]
+        [HttpPost("refresh")]
+        public async Task<IActionResult> RefreshToken(RefreshTokenRequest request)
+        {
+            var response = await identityService.RefreshTokenAsync(request);
+            if (response != null)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest();
+        }
+
         [HttpPost("register")]
         [AllowAnonymous]
         public async Task<IActionResult> Register(RegisterRequest request)

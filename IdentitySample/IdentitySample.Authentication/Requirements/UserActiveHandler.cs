@@ -22,6 +22,7 @@ namespace IdentitySample.Authentication.Requirements
             {
                 var userId = context.User.GetId();
                 var user = await userManager.FindByIdAsync(userId.ToString());
+
                 if (user != null && user.LockoutEnd.GetValueOrDefault() <= DateTimeOffset.UtcNow)
                 {
                     context.Succeed(requirement);

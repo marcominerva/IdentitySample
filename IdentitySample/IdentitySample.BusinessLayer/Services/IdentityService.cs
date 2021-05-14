@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using IdentitySample.Authentication;
 using IdentitySample.Authentication.Entities;
+using IdentitySample.Authentication.Extensions;
 using IdentitySample.BusinessLayer.Settings;
 using IdentitySample.Shared.Models;
 using Microsoft.AspNetCore.Identity;
@@ -48,16 +50,100 @@ namespace IdentitySample.BusinessLayer.Services
                     new Claim(ClaimTypes.Email, user.Email)
                 }.Union(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
 
+            var loginResponse = CreateToken(claims);
+
+            user.RefreshToken = loginResponse.RefreshToken;
+            user.RefreshTokenExpirationDate = DateTime.UtcNow.AddMinutes(jwtSettings.RefreshTokenExpirationMinutes);
+
+            await userManager.UpdateAsync(user);
+
+            return loginResponse;
+        }
+
+        public async Task<AuthResponse> RefreshTokenAsync(RefreshTokenRequest request)
+        {
+            var user = ValidateAccessToken(request.AccessToken);
+            if (user != null)
+            {
+                var userId = user.GetId();
+                var dbUser = await userManager.FindByIdAsync(userId.ToString());
+
+                if (dbUser?.RefreshToken == null || dbUser?.RefreshTokenExpirationDate < DateTime.UtcNow || dbUser?.RefreshToken != request.RefreshToken)
+                {
+                    return null;
+                }
+
+                var loginResponse = CreateToken(user.Claims);
+
+                dbUser.RefreshToken = loginResponse.RefreshToken;
+                dbUser.RefreshTokenExpirationDate = DateTime.UtcNow.AddMinutes(jwtSettings.RefreshTokenExpirationMinutes);
+
+                await userManager.UpdateAsync(dbUser);
+
+                return loginResponse;
+            }
+
+            return null;
+        }
+
+        private AuthResponse CreateToken(IEnumerable<Claim> claims)
+        {
             var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecurityKey));
             var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
 
             var jwtSecurityToken = new JwtSecurityToken(jwtSettings.Issuer, jwtSettings.Audience, claims,
-                DateTime.UtcNow, DateTime.UtcNow.AddDays(10), signingCredentials);
+                DateTime.UtcNow, DateTime.UtcNow.AddMinutes(jwtSettings.AccessTokenExpirationMinutes), signingCredentials);
 
             var accessToken = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
 
-            var response = new AuthResponse { AccessToken = accessToken };
+            var response = new AuthResponse
+            {
+                AccessToken = accessToken,
+                RefreshToken = GenerateRefreshToken()
+            };
+
             return response;
+
+            static string GenerateRefreshToken()
+            {
+                var randomNumber = new byte[256];
+                using var generator = RandomNumberGenerator.Create();
+                generator.GetBytes(randomNumber);
+
+                return Convert.ToBase64String(randomNumber);
+            }
+        }
+
+        private ClaimsPrincipal ValidateAccessToken(string accessToken)
+        {
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = jwtSettings.Issuer,
+                ValidateAudience = true,
+                ValidAudience = jwtSettings.Audience,
+                ValidateLifetime = false,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecurityKey)),
+                RequireExpirationTime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            try
+            {
+                var user = tokenHandler.ValidateToken(accessToken, tokenValidationParameters, out var securityToken);
+                if (securityToken is JwtSecurityToken jwtSecurityToken && jwtSecurityToken.Header.Alg == SecurityAlgorithms.HmacSha256)
+                {
+                    return user;
+                }
+            }
+            catch
+            {
+            }
+
+            return null;
         }
 
         public async Task<RegisterResponse> RegisterAsync(RegisterRequest request)

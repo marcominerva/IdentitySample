@@ -6,6 +6,10 @@
 
         public string Issuer { get; init; }
 
-        public string Audience { get; set; }
+        public string Audience { get; init; }
+
+        public int AccessTokenExpirationMinutes { get; init; }
+
+        public int RefreshTokenExpirationMinutes { get; init; }
     }
 }

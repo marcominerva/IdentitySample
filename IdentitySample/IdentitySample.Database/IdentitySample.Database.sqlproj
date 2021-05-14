@@ -68,4 +68,7 @@
     <Build Include="dbo\Tables\AspNetUsers.sql" />
     <Build Include="dbo\Tables\AspNetUserTokens.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="IdentitySample.Database.publish.xml" />
+  </ItemGroup>
 </Project>

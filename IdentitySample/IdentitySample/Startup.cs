@@ -110,7 +110,7 @@ namespace IdentitySample
             {
                 var policyBuilder = new AuthorizationPolicyBuilder().RequireAuthenticatedUser();
                 policyBuilder.Requirements.Add(new UserActiveRequirement());
-                options.FallbackPolicy = policyBuilder.Build();
+                options.FallbackPolicy = options.DefaultPolicy = policyBuilder.Build();
 
                 //options.AddPolicy("UserActive", policy =>
                 //{

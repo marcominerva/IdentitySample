@@ -6,13 +6,10 @@ namespace ConsumerService.Controllers
     [Route("[controller]")]
     public class MeController : ControllerBase
     {
-        public MeController()
-        {
-        }
-
         [HttpGet]
         public IActionResult Get()
         {
+            var user = User;
             return NoContent();
         }
     }

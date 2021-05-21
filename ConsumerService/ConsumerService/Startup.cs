@@ -1,4 +1,7 @@
 using System;
+using ConsumerService.Authentication;
+using IdentityClient;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -51,6 +54,9 @@ namespace ConsumerService
                     }
                 });
             });
+
+            services.AddIdentityClient(Configuration.GetSection("JwtSettings"));
+            services.AddSingleton<IClaimsTransformation, ClaimsTransformer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,10 +1,13 @@
 using System;
+using System.IO;
+using System.Reflection;
 using System.Text;
 using IdentitySample.Authentication;
 using IdentitySample.Authentication.Entities;
 using IdentitySample.Authentication.Requirements;
 using IdentitySample.BusinessLayer.Services;
 using IdentitySample.BusinessLayer.Settings;
+using IdentitySample.Services;
 using IdentitySample.StartupTasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -36,6 +39,8 @@ namespace IdentitySample
             var jwtSettings = Configure<JwtSettings>(nameof(JwtSettings));
 
             services.AddControllers();
+            services.AddHttpContextAccessor();
+
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "IdentitySample", Version = "v1" });
@@ -62,6 +67,11 @@ namespace IdentitySample
                         Array.Empty<string>()
                     }
                 });
+
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                options.IncludeXmlComments(xmlPath);
             });
 
             services.AddDbContext<AuthenticationDbContext>(options =>
@@ -145,6 +155,8 @@ namespace IdentitySample
             //});
 
             services.AddScoped<IIdentityService, IdentityService>();
+            services.AddScoped<IUserService, HttpUserService>();
+            services.AddScoped<IAuthenticatedService, AuthenticatedService>();
 
             services.AddHostedService<AuthenticationStartupTask>();
 

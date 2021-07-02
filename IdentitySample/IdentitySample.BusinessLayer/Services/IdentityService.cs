@@ -23,7 +23,8 @@ namespace IdentitySample.BusinessLayer.Services
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
 
-        public IdentityService(IOptions<JwtSettings> jwtSettingsOptions, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public IdentityService(IOptions<JwtSettings> jwtSettingsOptions,
+            UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             jwtSettings = jwtSettingsOptions.Value;
             this.userManager = userManager;

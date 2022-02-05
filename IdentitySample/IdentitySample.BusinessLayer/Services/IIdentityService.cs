@@ -1,14 +1,12 @@
-﻿using System.Threading.Tasks;
-using IdentitySample.Shared.Models;
+﻿using IdentitySample.Shared.Models;
 
-namespace IdentitySample.BusinessLayer.Services
+namespace IdentitySample.BusinessLayer.Services;
+
+public interface IIdentityService
 {
-    public interface IIdentityService
-    {
-        Task<RegisterResponse> RegisterAsync(RegisterRequest request);
+    Task<RegisterResponse> RegisterAsync(RegisterRequest request);
 
-        Task<AuthResponse> LoginAsync(LoginRequest request);
+    Task<AuthResponse> LoginAsync(LoginRequest request);
 
-        Task<AuthResponse> RefreshTokenAsync(RefreshTokenRequest request);
-    }
+    Task<AuthResponse> RefreshTokenAsync(RefreshTokenRequest request);
 }

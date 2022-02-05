@@ -1,8 +1,7 @@
-﻿namespace IdentitySample.Authentication
+﻿namespace IdentitySample.Authentication;
+
+public class CustomClaimTypes
 {
-    public class CustomClaimTypes
-    {
-        public const string ApplicationId = nameof(ApplicationId);
-        public const string Age = nameof(Age);
-    }
+    public const string ApplicationId = nameof(ApplicationId);
+    public const string Age = nameof(Age);
 }

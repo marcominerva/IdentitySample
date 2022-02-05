@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace IdentitySample.Authentication.Requirements
+namespace IdentitySample.Authentication.Requirements;
+
+public class UserActiveRequirement : IAuthorizationRequirement
 {
-    public class UserActiveRequirement : IAuthorizationRequirement
-    {
-    }
 }

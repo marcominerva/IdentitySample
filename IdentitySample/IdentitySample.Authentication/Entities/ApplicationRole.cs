@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 
-namespace IdentitySample.Authentication.Entities
+namespace IdentitySample.Authentication.Entities;
+
+public class ApplicationRole : IdentityRole<Guid>
 {
-    public class ApplicationRole : IdentityRole<Guid>
+    public ApplicationRole()
     {
-        public ApplicationRole()
-        {
-        }
-
-        public ApplicationRole(string roleName) : base(roleName)
-        {
-        }
-
-        public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
     }
+
+    public ApplicationRole(string roleName) : base(roleName)
+    {
+    }
+
+    public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
 }

@@ -1,20 +1,18 @@
 ﻿using IdentitySample.BusinessLayer.Services;
-using Microsoft.AspNetCore.Http;
 
-namespace IdentitySample.Services
+namespace IdentitySample.Services;
+
+public class HttpUserService : IUserService
 {
-    public class HttpUserService : IUserService
+    private readonly IHttpContextAccessor httpContextAccessor;
+
+    public HttpUserService(IHttpContextAccessor httpContextAccessor)
     {
-        private readonly IHttpContextAccessor httpContextAccessor;
+        this.httpContextAccessor = httpContextAccessor;
+    }
 
-        public HttpUserService(IHttpContextAccessor httpContextAccessor)
-        {
-            this.httpContextAccessor = httpContextAccessor;
-        }
-
-        public string GetUserName()
-        {
-            return httpContextAccessor.HttpContext.User.Identity.Name;
-        }
+    public string GetUserName()
+    {
+        return httpContextAccessor.HttpContext.User.Identity.Name;
     }
 }

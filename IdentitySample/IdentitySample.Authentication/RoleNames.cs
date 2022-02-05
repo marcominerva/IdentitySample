@@ -1,9 +1,8 @@
-﻿namespace IdentitySample.Authentication
+﻿namespace IdentitySample.Authentication;
+
+public static class RoleNames
 {
-    public static class RoleNames
-    {
-        public const string Administrator = nameof(Administrator);
-        public const string PowerUser = nameof(PowerUser);
-        public const string User = nameof(User);
-    }
+    public const string Administrator = nameof(Administrator);
+    public const string PowerUser = nameof(PowerUser);
+    public const string User = nameof(User);
 }

@@ -1,32 +1,29 @@
-﻿using System;
-using System.Threading.Tasks;
-using IdentitySample.Authentication.Entities;
+﻿using IdentitySample.Authentication.Entities;
 using IdentitySample.Authentication.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
-namespace IdentitySample.Authentication.Requirements
+namespace IdentitySample.Authentication.Requirements;
+
+public class UserActiveHandler : AuthorizationHandler<UserActiveRequirement>
 {
-    public class UserActiveHandler : AuthorizationHandler<UserActiveRequirement>
+    private readonly UserManager<ApplicationUser> userManager;
+
+    public UserActiveHandler(UserManager<ApplicationUser> userManager)
     {
-        private readonly UserManager<ApplicationUser> userManager;
+        this.userManager = userManager;
+    }
 
-        public UserActiveHandler(UserManager<ApplicationUser> userManager)
+    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, UserActiveRequirement requirement)
+    {
+        if (context.User.Identity.IsAuthenticated)
         {
-            this.userManager = userManager;
-        }
+            var userId = context.User.GetId();
+            var user = await userManager.FindByIdAsync(userId.ToString());
 
-        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, UserActiveRequirement requirement)
-        {
-            if (context.User.Identity.IsAuthenticated)
+            if (user != null && user.LockoutEnd.GetValueOrDefault() <= DateTimeOffset.UtcNow)
             {
-                var userId = context.User.GetId();
-                var user = await userManager.FindByIdAsync(userId.ToString());
-
-                if (user != null && user.LockoutEnd.GetValueOrDefault() <= DateTimeOffset.UtcNow)
-                {
-                    context.Succeed(requirement);
-                }
+                context.Succeed(requirement);
             }
         }
     }

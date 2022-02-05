@@ -1,12 +1,10 @@
-﻿using System;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 
-namespace IdentitySample.Authentication.Entities
+namespace IdentitySample.Authentication.Entities;
+
+public class ApplicationUserRole : IdentityUserRole<Guid>
 {
-    public class ApplicationUserRole : IdentityUserRole<Guid>
-    {
-        public virtual ApplicationUser User { get; set; }
+    public virtual ApplicationUser User { get; set; }
 
-        public virtual ApplicationRole Role { get; set; }
-    }
+    public virtual ApplicationRole Role { get; set; }
 }

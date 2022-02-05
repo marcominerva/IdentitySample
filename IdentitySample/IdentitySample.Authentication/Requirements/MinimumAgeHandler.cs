@@ -1,19 +1,17 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 
-namespace IdentitySample.Authentication.Requirements
+namespace IdentitySample.Authentication.Requirements;
+
+public class MinimumAgeHandler : AuthorizationHandler<MinimumAgeRequirement>
 {
-    public class MinimumAgeHandler : AuthorizationHandler<MinimumAgeRequirement>
+    protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, MinimumAgeRequirement requirement)
     {
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, MinimumAgeRequirement requirement)
+        if (context.User.HasClaim(c => c.Type == CustomClaimTypes.Age) &&
+            int.TryParse(context.User.FindFirst(CustomClaimTypes.Age).Value, out var age) && age >= requirement.MinimumAge)
         {
-            if (context.User.HasClaim(c => c.Type == CustomClaimTypes.Age) &&
-                int.TryParse(context.User.FindFirst(CustomClaimTypes.Age).Value, out var age) && age >= requirement.MinimumAge)
-            {
-                context.Succeed(requirement);
-            }
-
-            return Task.CompletedTask;
+            context.Succeed(requirement);
         }
+
+        return Task.CompletedTask;
     }
 }

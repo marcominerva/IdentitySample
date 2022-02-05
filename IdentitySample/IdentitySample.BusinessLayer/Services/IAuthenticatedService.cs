@@ -1,9 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿namespace IdentitySample.BusinessLayer.Services;
 
-namespace IdentitySample.BusinessLayer.Services
+public interface IAuthenticatedService
 {
-    public interface IAuthenticatedService
-    {
-        Task RunAsync();
-    }
+    Task RunAsync();
 }

@@ -1,7 +1,6 @@
-﻿namespace IdentitySample.BusinessLayer.Services
+﻿namespace IdentitySample.BusinessLayer.Services;
+
+public interface IUserService
 {
-    public interface IUserService
-    {
-        string GetUserName();
-    }
+    string GetUserName();
 }

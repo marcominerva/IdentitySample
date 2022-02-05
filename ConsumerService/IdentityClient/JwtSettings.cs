@@ -1,7 +1,6 @@
-﻿namespace IdentityClient
+﻿namespace IdentityClient;
+
+internal class JwtSettings
 {
-    internal class JwtSettings
-    {
-        public string AuthorizationServerUrl { get; init; }
-    }
+    public string AuthorizationServerUrl { get; init; }
 }

@@ -1,57 +1,55 @@
-﻿using System;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
-namespace IdentityClient
+namespace IdentityClient;
+
+public static class IdentityClientExtensions
 {
-    public static class IdentityClientExtensions
+    public static IServiceCollection AddIdentityClient(this IServiceCollection services, IConfiguration configuration)
     {
-        public static IServiceCollection AddIdentityClient(this IServiceCollection services, IConfiguration configuration)
+        var jwtSettings = configuration.Get<JwtSettings>();
+
+        services.AddHttpContextAccessor();
+
+        services.AddHttpClient<IAuthorizationHandler, ValidateTokenHandler>(client =>
         {
-            var jwtSettings = configuration.Get<JwtSettings>();
+            client.BaseAddress = new Uri(jwtSettings.AuthorizationServerUrl);
+        });
 
-            services.AddHttpContextAccessor();
-
-            services.AddHttpClient<IAuthorizationHandler, ValidateTokenHandler>(client =>
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
             {
-                client.BaseAddress = new Uri(jwtSettings.AuthorizationServerUrl);
-            });
-
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = false,
+                ValidateIssuerSigningKey = false,
+                RequireExpirationTime = false,
+                SignatureValidator = delegate (string token, TokenValidationParameters _)
                 {
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidateLifetime = false,
-                    ValidateIssuerSigningKey = false,
-                    RequireExpirationTime = false,
-                    SignatureValidator = delegate (string token, TokenValidationParameters _)
-                    {
-                        var jwt = new JwtSecurityToken(token);
-                        return jwt;
-                    }
-                };
-            });
+                    var jwt = new JwtSecurityToken(token);
+                    return jwt;
+                }
+            };
+        });
 
-            services.AddAuthorization(options =>
-            {
-                var policyBuilder = new AuthorizationPolicyBuilder().RequireAuthenticatedUser();
-                policyBuilder.Requirements.Add(new ValidTokenRequirement());
+        services.AddAuthorization(options =>
+        {
+            var policyBuilder = new AuthorizationPolicyBuilder().RequireAuthenticatedUser();
+            policyBuilder.Requirements.Add(new ValidTokenRequirement());
 
-                options.FallbackPolicy = options.DefaultPolicy = policyBuilder.Build();
-            });
+            options.FallbackPolicy = options.DefaultPolicy = policyBuilder.Build();
+        });
 
-            return services;
-        }
+        return services;
     }
 }

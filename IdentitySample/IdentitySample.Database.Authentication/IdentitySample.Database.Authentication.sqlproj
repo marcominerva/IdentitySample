@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <Name>IdentitySample.Database</Name>
+    <Name>IdentitySample.Database.Authentication</Name>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>4.1</ProjectVersion>
     <ProjectGuid>{30e7860a-1055-4c16-82ce-6507bdf2642c}</ProjectGuid>
@@ -11,8 +11,8 @@
     <OutputType>Database</OutputType>
     <RootPath>
     </RootPath>
-    <RootNamespace>IdentitySample.Database</RootNamespace>
-    <AssemblyName>IdentitySample.Database</AssemblyName>
+    <RootNamespace>IdentitySample.Database.Authentication</RootNamespace>
+    <AssemblyName>IdentitySample.Database.Authentication</AssemblyName>
     <ModelCollation>1033, CI</ModelCollation>
     <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
     <DeployToDatabase>True</DeployToDatabase>
@@ -57,19 +57,18 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
-    <Folder Include="dbo" />
-    <Folder Include="dbo\Tables" />
+    <Folder Include="Tables" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="dbo\Tables\AspNetRoleClaims.sql" />
-    <Build Include="dbo\Tables\AspNetRoles.sql" />
-    <Build Include="dbo\Tables\AspNetUserClaims.sql" />
-    <Build Include="dbo\Tables\AspNetUserLogins.sql" />
-    <Build Include="dbo\Tables\AspNetUserRoles.sql" />
-    <Build Include="dbo\Tables\AspNetUsers.sql" />
-    <Build Include="dbo\Tables\AspNetUserTokens.sql" />
+    <Build Include="Tables\AspNetRoleClaims.sql" />
+    <Build Include="Tables\AspNetRoles.sql" />
+    <Build Include="Tables\AspNetUserClaims.sql" />
+    <Build Include="Tables\AspNetUserLogins.sql" />
+    <Build Include="Tables\AspNetUserRoles.sql" />
+    <Build Include="Tables\AspNetUsers.sql" />
+    <Build Include="Tables\AspNetUserTokens.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="IdentitySample.Database.publish.xml" />
+    <None Include="IdentitySample.Database.Authentication.publish.xml" />
   </ItemGroup>
 </Project>

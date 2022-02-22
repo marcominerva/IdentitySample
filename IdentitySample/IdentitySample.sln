@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31129.286
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentitySample", "IdentitySample\IdentitySample.csproj", "{0C6D7944-C054-42C4-B0FB-81C9191CBF6F}"
 EndProject
@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentitySample.Shared", "Id
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentitySample.Authentication", "IdentitySample.Authentication\IdentitySample.Authentication.csproj", "{EE56978E-86F1-485B-A8A0-B43730C24BFE}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "IdentitySample.Database", "IdentitySample.Database\IdentitySample.Database.sqlproj", "{30E7860A-1055-4C16-82CE-6507BDF2642C}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "IdentitySample.Database.Authentication", "IdentitySample.Database.Authentication\IdentitySample.Database.Authentication.sqlproj", "{30E7860A-1055-4C16-82CE-6507BDF2642C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Databases", "Databases", "{2D778555-E8EE-4073-B59F-E305F6493E95}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +46,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{30E7860A-1055-4C16-82CE-6507BDF2642C} = {2D778555-E8EE-4073-B59F-E305F6493E95}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {735331B2-C874-401F-BC16-D12FE813080E}

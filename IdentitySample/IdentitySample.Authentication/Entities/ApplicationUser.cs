@@ -12,5 +12,7 @@ public class ApplicationUser : IdentityUser<Guid>
 
     public DateTime? RefreshTokenExpirationDate { get; set; }
 
+    public Guid? TenantId { get; set; }
+
     public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
 }

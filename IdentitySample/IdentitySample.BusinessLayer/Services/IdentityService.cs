@@ -39,13 +39,14 @@ public class IdentityService : IIdentityService
         var userRoles = await userManager.GetRolesAsync(user);
 
         var claims = new List<Claim>()
-                {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Name, request.UserName),
-                    new Claim(ClaimTypes.GivenName, user.FirstName),
-                    new Claim(ClaimTypes.Surname, user.LastName ?? string.Empty),
-                    new Claim(ClaimTypes.Email, user.Email)
-                }.Union(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, request.UserName),
+                new Claim(ClaimTypes.GivenName, user.FirstName),
+                new Claim(ClaimTypes.Surname, user.LastName ?? string.Empty),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.GroupSid, user.TenantId?.ToString() ??string.Empty)
+            }.Union(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
 
         var loginResponse = CreateToken(claims);
 

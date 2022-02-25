@@ -5,6 +5,8 @@ using IdentitySample.Authentication.Entities;
 using IdentitySample.Authentication.Requirements;
 using IdentitySample.BusinessLayer.Services;
 using IdentitySample.BusinessLayer.Settings;
+using IdentitySample.Contracts;
+using IdentitySample.DataAccessLayer;
 using IdentitySample.Services;
 using IdentitySample.StartupTasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -63,7 +65,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
         options.IncludeXmlComments(xmlPath);
     });
 
-    services.AddSqlServer<AuthenticationDbContext>(configuration.GetConnectionString("SqlConnection"));
+    services.AddSqlServer<AuthenticationDbContext>(configuration.GetConnectionString("AuthConnection"));
 
     services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
     {
@@ -76,6 +78,8 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     })
     .AddEntityFrameworkStores<AuthenticationDbContext>()
     .AddDefaultTokenProviders();
+
+    services.AddSqlServer<DataContext>(configuration.GetConnectionString("SqlConnection"));
 
     services.AddAuthentication(options =>
     {
@@ -142,6 +146,8 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     services.AddScoped<IIdentityService, IdentityService>();
     services.AddScoped<IUserService, HttpUserService>();
     services.AddScoped<IAuthenticatedService, AuthenticatedService>();
+
+    services.AddScoped<IProductService, ProductService>();
 
     services.AddHostedService<AuthenticationStartupTask>();
 

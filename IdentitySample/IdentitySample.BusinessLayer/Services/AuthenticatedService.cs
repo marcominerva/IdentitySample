@@ -1,4 +1,6 @@
-﻿namespace IdentitySample.BusinessLayer.Services;
+﻿using IdentitySample.Contracts;
+
+namespace IdentitySample.BusinessLayer.Services;
 
 public class AuthenticatedService : IAuthenticatedService
 {

@@ -9,7 +9,7 @@ public class AuthenticationDbContext
     : IdentityDbContext<ApplicationUser, ApplicationRole, Guid, IdentityUserClaim<Guid>, ApplicationUserRole,
         IdentityUserLogin<Guid>, IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>
 {
-    public AuthenticationDbContext(DbContextOptions options) : base(options)
+    public AuthenticationDbContext(DbContextOptions<AuthenticationDbContext> options) : base(options)
     {
     }
 

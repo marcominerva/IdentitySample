@@ -1,4 +1,6 @@
-﻿using IdentitySample.BusinessLayer.Services;
+﻿using System.Security.Claims;
+using IdentitySample.Authentication.Extensions;
+using IdentitySample.Contracts;
 
 namespace IdentitySample.Services;
 
@@ -11,8 +13,16 @@ public class HttpUserService : IUserService
         this.httpContextAccessor = httpContextAccessor;
     }
 
-    public string GetUserName()
+    public Guid GetTenantId()
     {
-        return httpContextAccessor.HttpContext.User.Identity.Name;
+        var tenantIdString = httpContextAccessor.HttpContext.User.GetClaimValue(ClaimTypes.GroupSid);
+        if (Guid.TryParse(tenantIdString, out var tenantId))
+        {
+            return tenantId;
+        }
+
+        return Guid.Empty;
     }
+
+    public string GetUserName() => httpContextAccessor.HttpContext.User.Identity.Name;
 }

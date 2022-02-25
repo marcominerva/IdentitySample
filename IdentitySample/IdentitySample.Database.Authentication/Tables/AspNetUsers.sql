@@ -18,6 +18,7 @@
     [AccessFailedCount]    INT                NOT NULL,
     [RefreshToken] NVARCHAR(512) NULL, 
     [RefreshTokenExpirationDate] DATETIME NULL, 
+    [TenantId] UNIQUEIDENTIFIER NULL,
     CONSTRAINT [PK_AspNetUsers] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 

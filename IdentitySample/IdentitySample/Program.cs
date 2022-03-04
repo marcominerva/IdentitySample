@@ -30,6 +30,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     var jwtSettings = Configure<JwtSettings>(nameof(JwtSettings));
 
     services.AddControllers();
+    services.AddMemoryCache();
     services.AddHttpContextAccessor();
 
     services.AddSwaggerGen(options =>
@@ -79,7 +80,13 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     .AddEntityFrameworkStores<AuthenticationDbContext>()
     .AddDefaultTokenProviders();
 
-    services.AddSqlServer<DataContext>(configuration.GetConnectionString("SqlConnection"));
+    services.AddDbContext<DataContext>((services, options) =>
+    {
+        var tenantService = services.GetRequiredService<ITenantService>();
+        var tenant = tenantService.GetTenant();
+
+        options.UseSqlServer(tenant.ConnectionString);
+    });
 
     services.AddAuthentication(options =>
     {
@@ -146,6 +153,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     services.AddScoped<IIdentityService, IdentityService>();
     services.AddScoped<IUserService, HttpUserService>();
     services.AddScoped<IAuthenticatedService, AuthenticatedService>();
+    services.AddScoped<ITenantService, TenantService>();
 
     services.AddScoped<IProductService, ProductService>();
 

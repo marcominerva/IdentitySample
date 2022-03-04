@@ -9,6 +9,8 @@ public class AuthenticationDbContext
     : IdentityDbContext<ApplicationUser, ApplicationRole, Guid, IdentityUserClaim<Guid>, ApplicationUserRole,
         IdentityUserLogin<Guid>, IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>
 {
+    public DbSet<Tenant> Tenants { get; set; }
+
     public AuthenticationDbContext(DbContextOptions<AuthenticationDbContext> options) : base(options)
     {
     }
@@ -32,6 +34,15 @@ public class AuthenticationDbContext
 
             userRole.HasOne(ur => ur.User)
                 .WithMany(u => u.UserRoles).HasForeignKey(ur => ur.UserId).IsRequired();
+        });
+
+        builder.Entity<Tenant>(tenant =>
+        {
+            tenant.ToTable("Tenants");
+            tenant.HasKey(t => t.Id);
+            tenant.Property(t => t.Id).ValueGeneratedOnAdd();
+
+            tenant.Property(t => t.ConnectionString).HasMaxLength(4000).IsRequired().IsUnicode(false);
         });
     }
 }

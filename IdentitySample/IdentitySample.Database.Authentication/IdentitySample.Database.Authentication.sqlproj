@@ -67,6 +67,7 @@
     <Build Include="Tables\AspNetUserRoles.sql" />
     <Build Include="Tables\AspNetUsers.sql" />
     <Build Include="Tables\AspNetUserTokens.sql" />
+    <Build Include="Tables\Tenants.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="IdentitySample.Database.Authentication.publish.xml" />

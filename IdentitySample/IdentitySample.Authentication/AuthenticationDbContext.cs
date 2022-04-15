@@ -43,6 +43,8 @@ public class AuthenticationDbContext
             tenant.Property(t => t.Id).ValueGeneratedOnAdd();
 
             tenant.Property(t => t.ConnectionString).HasMaxLength(4000).IsRequired().IsUnicode(false);
+            tenant.Property(t => t.StorageConnectionString).HasMaxLength(4000).IsUnicode(false);
+            tenant.Property(t => t.ContainerName).HasMaxLength(256).IsUnicode(false);
         });
     }
 }

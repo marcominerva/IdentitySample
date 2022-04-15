@@ -45,7 +45,7 @@ public class IdentityService : IIdentityService
                 new Claim(ClaimTypes.GivenName, user.FirstName),
                 new Claim(ClaimTypes.Surname, user.LastName ?? string.Empty),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.GroupSid, user.TenantId?.ToString() ??string.Empty)
+                new Claim(ClaimTypes.GroupSid, user.TenantId?.ToString() ?? string.Empty)
             }.Union(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
 
         var loginResponse = CreateToken(claims);

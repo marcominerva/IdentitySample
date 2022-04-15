@@ -24,7 +24,7 @@ public class TenantService : ITenantService
         var tenants = cache.GetOrCreate("tenants", entry =>
         {
             var tenants = authenticationDbContext.Tenants.ToList()
-                .ToDictionary(k => k.Id, v => new Tenant(v.Id, v.ConnectionString));
+                .ToDictionary(k => k.Id, v => new Tenant(v.Id, v.ConnectionString, v.StorageConnectionString, v.ContainerName));
 
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1);
             return tenants;

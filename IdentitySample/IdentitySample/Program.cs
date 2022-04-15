@@ -9,6 +9,7 @@ using IdentitySample.Contracts;
 using IdentitySample.DataAccessLayer;
 using IdentitySample.Services;
 using IdentitySample.StartupTasks;
+using IdentitySample.StorageProviders;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -86,6 +87,15 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
         var tenant = tenantService.GetTenant();
 
         options.UseSqlServer(tenant.ConnectionString);
+    });
+
+    services.AddAzureStorage((services, options) =>
+    {
+        var tenantService = services.GetRequiredService<ITenantService>();
+        var tenant = tenantService.GetTenant();
+
+        options.ConnectionString = tenant.StorageConnectionString;
+        options.ContainerName = tenant.ContainerName ?? tenant.Id.ToString();
     });
 
     services.AddAuthentication(options =>

@@ -1,4 +1,5 @@
-﻿using IdentitySample.Authentication.Entities;
+﻿using System.Security.Claims;
+using IdentitySample.Authentication.Entities;
 using IdentitySample.Authentication.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -20,8 +21,10 @@ public class UserActiveHandler : AuthorizationHandler<UserActiveRequirement>
         {
             var userId = context.User.GetId();
             var user = await userManager.FindByIdAsync(userId.ToString());
+            var securityStamp = context.User.GetClaimValue(ClaimTypes.SerialNumber);
 
-            if (user != null && user.LockoutEnd.GetValueOrDefault() <= DateTimeOffset.UtcNow)
+            if (user != null && user.LockoutEnd.GetValueOrDefault() <= DateTimeOffset.UtcNow
+                && securityStamp == user.SecurityStamp)
             {
                 context.Succeed(requirement);
             }

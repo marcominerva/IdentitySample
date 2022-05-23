@@ -36,7 +36,7 @@ public class IdentityService : IIdentityService
         }
 
         var user = await userManager.FindByNameAsync(request.UserName);
-        await userManager.UpdateSecurityStampAsync(user);
+        _ = await userManager.UpdateSecurityStampAsync(user);
 
         var userRoles = await userManager.GetRolesAsync(user);
 
@@ -49,14 +49,14 @@ public class IdentityService : IIdentityService
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.GroupSid, user.TenantId?.ToString() ?? string.Empty),
                 new Claim(ClaimTypes.SerialNumber, user.SecurityStamp.ToString())
-            }.Union(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
+            }.Union(userRoles.Select(role => new Claim(ClaimTypes.Role, role))).ToList();
 
         var loginResponse = CreateToken(claims);
 
         user.RefreshToken = loginResponse.RefreshToken;
         user.RefreshTokenExpirationDate = DateTime.UtcNow.AddMinutes(jwtSettings.RefreshTokenExpirationMinutes);
 
-        await userManager.UpdateAsync(user);
+        _ = await userManager.UpdateAsync(user);
 
         return loginResponse;
     }
@@ -74,12 +74,12 @@ public class IdentityService : IIdentityService
                 return null;
             }
 
-            var loginResponse = CreateToken(user.Claims);
+            var loginResponse = CreateToken(user.Claims.ToList());
 
             dbUser.RefreshToken = loginResponse.RefreshToken;
             dbUser.RefreshTokenExpirationDate = DateTime.UtcNow.AddMinutes(jwtSettings.RefreshTokenExpirationMinutes);
 
-            await userManager.UpdateAsync(dbUser);
+            _ = await userManager.UpdateAsync(dbUser);
 
             return loginResponse;
         }
@@ -87,8 +87,11 @@ public class IdentityService : IIdentityService
         return null;
     }
 
-    private AuthResponse CreateToken(IEnumerable<Claim> claims)
+    private AuthResponse CreateToken(IList<Claim> claims)
     {
+        var audienceClaim = claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Aud);
+        _ = claims.Remove(audienceClaim);
+
         var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecurityKey));
         var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
 

@@ -29,6 +29,18 @@ public class AuthController : ControllerBase
         return BadRequest();
     }
 
+    [HttpPost("impersonate")]
+    public async Task<IActionResult> Impersonate(Guid userId)
+    {
+        var response = await identityService.ImpersonateAsync(userId);
+        if (response is not null)
+        {
+            return Ok(response);
+        }
+
+        return BadRequest();
+    }
+
     [AllowAnonymous]
     [HttpPost("refresh")]
     public async Task<IActionResult> RefreshToken(RefreshTokenRequest request)

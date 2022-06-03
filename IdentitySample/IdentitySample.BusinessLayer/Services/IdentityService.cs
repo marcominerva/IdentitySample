@@ -6,6 +6,7 @@ using IdentitySample.Authentication;
 using IdentitySample.Authentication.Entities;
 using IdentitySample.Authentication.Extensions;
 using IdentitySample.BusinessLayer.Settings;
+using IdentitySample.Contracts;
 using IdentitySample.Shared.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -18,13 +19,16 @@ public class IdentityService : IIdentityService
     private readonly JwtSettings jwtSettings;
     private readonly UserManager<ApplicationUser> userManager;
     private readonly SignInManager<ApplicationUser> signInManager;
+    private readonly IUserService userService;
 
     public IdentityService(IOptions<JwtSettings> jwtSettingsOptions,
-        UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
+        IUserService userService)
     {
         jwtSettings = jwtSettingsOptions.Value;
         this.userManager = userManager;
         this.signInManager = signInManager;
+        this.userService = userService;
     }
 
     public async Task<AuthResponse> LoginAsync(LoginRequest request)
@@ -41,15 +45,15 @@ public class IdentityService : IIdentityService
         var userRoles = await userManager.GetRolesAsync(user);
 
         var claims = new List<Claim>()
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, request.UserName),
-                new Claim(ClaimTypes.GivenName, user.FirstName),
-                new Claim(ClaimTypes.Surname, user.LastName ?? string.Empty),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.GroupSid, user.TenantId?.ToString() ?? string.Empty),
-                new Claim(ClaimTypes.SerialNumber, user.SecurityStamp.ToString())
-            }.Union(userRoles.Select(role => new Claim(ClaimTypes.Role, role))).ToList();
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Name, request.UserName),
+            new Claim(ClaimTypes.GivenName, user.FirstName),
+            new Claim(ClaimTypes.Surname, user.LastName ?? string.Empty),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.GroupSid, user.TenantId?.ToString() ?? string.Empty),
+            new Claim(ClaimTypes.SerialNumber, user.SecurityStamp.ToString())
+        }.Union(userRoles.Select(role => new Claim(ClaimTypes.Role, role))).ToList();
 
         var loginResponse = CreateToken(claims);
 
@@ -59,6 +63,46 @@ public class IdentityService : IIdentityService
         _ = await userManager.UpdateAsync(user);
 
         return loginResponse;
+    }
+
+    public async Task<AuthResponse> ImpersonateAsync(Guid userId)
+    {
+        var user = await userManager.FindByIdAsync(userId.ToString());
+        if (user is null || user.LockoutEnd.GetValueOrDefault() > DateTimeOffset.UtcNow)
+        {
+            return null;
+        }
+
+        _ = await userManager.UpdateSecurityStampAsync(user);
+        var identity = userService.GetIdentity();
+
+        UpdateClaim(ClaimTypes.NameIdentifier, user.Id.ToString());
+        UpdateClaim(ClaimTypes.Name, user.UserName);
+        UpdateClaim(ClaimTypes.GivenName, user.FirstName);
+        UpdateClaim(ClaimTypes.Surname, user.LastName ?? string.Empty);
+        UpdateClaim(ClaimTypes.Email, user.Email);
+        UpdateClaim(ClaimTypes.GroupSid, user.TenantId?.ToString() ?? string.Empty);
+        UpdateClaim(ClaimTypes.SerialNumber, user.SecurityStamp.ToString());
+
+        var loginResponse = CreateToken(identity.Claims.ToList());
+
+        user.RefreshToken = loginResponse.RefreshToken;
+        user.RefreshTokenExpirationDate = DateTime.UtcNow.AddMinutes(jwtSettings.RefreshTokenExpirationMinutes);
+
+        _ = await userManager.UpdateAsync(user);
+
+        return loginResponse;
+
+        void UpdateClaim(string type, string value)
+        {
+            var existingClaim = identity.FindFirst(type);
+            if (existingClaim is not null)
+            {
+                identity.RemoveClaim(existingClaim);
+            }
+
+            identity.AddClaim(new Claim(type, value));
+        }
     }
 
     public async Task<AuthResponse> RefreshTokenAsync(RefreshTokenRequest request)

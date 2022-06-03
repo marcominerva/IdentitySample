@@ -25,4 +25,6 @@ public class HttpUserService : IUserService
     }
 
     public string GetUserName() => httpContextAccessor.HttpContext.User.Identity.Name;
+
+    public ClaimsIdentity GetIdentity() => httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity;
 }

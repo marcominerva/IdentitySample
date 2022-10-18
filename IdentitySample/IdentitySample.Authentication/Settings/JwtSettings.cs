@@ -1,4 +1,4 @@
-﻿namespace IdentitySample.BusinessLayer.Settings;
+﻿namespace IdentitySample.Authentication.Settings;
 
 public class JwtSettings
 {

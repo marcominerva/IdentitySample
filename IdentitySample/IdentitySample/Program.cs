@@ -1,10 +1,9 @@
-using System.Reflection;
-using System.Text;
 using IdentitySample.Authentication;
 using IdentitySample.Authentication.Entities;
-using IdentitySample.Authentication.Requirements;
+using IdentitySample.Authentication.Settings;
+using IdentitySample.Authorization.Handlers;
+using IdentitySample.Authorization.Requirements;
 using IdentitySample.BusinessLayer.Services;
-using IdentitySample.BusinessLayer.Settings;
 using IdentitySample.Contracts;
 using IdentitySample.DataAccessLayer;
 using IdentitySample.Services;
@@ -17,6 +16,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigureServices(builder.Services, builder.Configuration);

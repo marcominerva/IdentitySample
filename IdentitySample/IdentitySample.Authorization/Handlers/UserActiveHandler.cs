@@ -1,10 +1,11 @@
-﻿using System.Security.Claims;
-using IdentitySample.Authentication.Entities;
+﻿using IdentitySample.Authentication.Entities;
 using IdentitySample.Authentication.Extensions;
+using IdentitySample.Authorization.Requirements;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
-namespace IdentitySample.Authentication.Requirements;
+namespace IdentitySample.Authorization.Handlers;
 
 public class UserActiveHandler : AuthorizationHandler<UserActiveRequirement>
 {

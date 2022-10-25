@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using IdentitySample.Authentication;
+using IdentitySample.Authorization.Requirements;
+using Microsoft.AspNetCore.Authorization;
 
-namespace IdentitySample.Authentication.Requirements;
+namespace IdentitySample.Authorization.Handlers;
 
 public class MinimumAgeHandler : AuthorizationHandler<MinimumAgeRequirement>
 {

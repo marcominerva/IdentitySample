@@ -21,7 +21,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentitySample.DataAccessLa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentitySample.Contracts", "IdentitySample.Contracts\IdentitySample.Contracts.csproj", "{F01DED0D-AE45-444C-B419-7346CDD6890B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentitySample.StorageProviders", "IdentitySample.StorageProviders\IdentitySample.StorageProviders.csproj", "{A7CA3DBA-96B5-458F-ADB8-D88A18D06B70}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentitySample.StorageProviders", "IdentitySample.StorageProviders\IdentitySample.StorageProviders.csproj", "{A7CA3DBA-96B5-458F-ADB8-D88A18D06B70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentitySample.Authorization", "IdentitySample.Authorization\IdentitySample.Authorization.csproj", "{427D3DE5-C6BD-4F4B-A2FE-3FB33F278713}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +71,10 @@ Global
 		{A7CA3DBA-96B5-458F-ADB8-D88A18D06B70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7CA3DBA-96B5-458F-ADB8-D88A18D06B70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7CA3DBA-96B5-458F-ADB8-D88A18D06B70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{427D3DE5-C6BD-4F4B-A2FE-3FB33F278713}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{427D3DE5-C6BD-4F4B-A2FE-3FB33F278713}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{427D3DE5-C6BD-4F4B-A2FE-3FB33F278713}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{427D3DE5-C6BD-4F4B-A2FE-3FB33F278713}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -4,15 +4,8 @@ using IdentitySample.Contracts;
 
 namespace IdentitySample.Services;
 
-public class HttpUserService : IUserService
+public class HttpUserService(IHttpContextAccessor httpContextAccessor) : IUserService
 {
-    private readonly IHttpContextAccessor httpContextAccessor;
-
-    public HttpUserService(IHttpContextAccessor httpContextAccessor)
-    {
-        this.httpContextAccessor = httpContextAccessor;
-    }
-
     public Guid GetTenantId()
     {
         var tenantIdString = httpContextAccessor.HttpContext.User.GetClaimValue(ClaimTypes.GroupSid);

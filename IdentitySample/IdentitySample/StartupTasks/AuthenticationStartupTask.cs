@@ -4,15 +4,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace IdentitySample.StartupTasks;
 
-public class AuthenticationStartupTask : IHostedService
+public class AuthenticationStartupTask(IServiceProvider serviceProvider) : IHostedService
 {
-    private readonly IServiceProvider serviceProvider;
-
-    public AuthenticationStartupTask(IServiceProvider serviceProvider)
-    {
-        this.serviceProvider = serviceProvider;
-    }
-
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         using var scope = serviceProvider.CreateScope();

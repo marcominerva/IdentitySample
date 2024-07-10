@@ -1,8 +1,8 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 
 namespace IdentityClient;
@@ -36,7 +36,7 @@ public static class IdentityClientExtensions
                 RequireExpirationTime = false,
                 SignatureValidator = delegate (string token, TokenValidationParameters _)
                 {
-                    var jwt = new JwtSecurityToken(token);
+                    var jwt = new JsonWebToken(token);
                     return jwt;
                 }
             };

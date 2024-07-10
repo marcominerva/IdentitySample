@@ -6,15 +6,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace IdentitySample.Authentication.Requirements;
 
-public class UserActiveHandler : AuthorizationHandler<UserActiveRequirement>
+public class UserActiveHandler(UserManager<ApplicationUser> userManager) : AuthorizationHandler<UserActiveRequirement>
 {
-    private readonly UserManager<ApplicationUser> userManager;
-
-    public UserActiveHandler(UserManager<ApplicationUser> userManager)
-    {
-        this.userManager = userManager;
-    }
-
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, UserActiveRequirement requirement)
     {
         if (context.User.Identity.IsAuthenticated)

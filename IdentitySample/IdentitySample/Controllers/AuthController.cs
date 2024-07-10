@@ -7,15 +7,8 @@ namespace IdentitySample.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController : ControllerBase
+public class AuthController(IIdentityService identityService) : ControllerBase
 {
-    private readonly IIdentityService identityService;
-
-    public AuthController(IIdentityService identityService)
-    {
-        this.identityService = identityService;
-    }
-
     [HttpPost("login")]
     [AllowAnonymous]
     public async Task<IActionResult> Login(LoginRequest request)

@@ -5,15 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IdentitySample.Authentication;
 
-public class AuthenticationDbContext
-    : IdentityDbContext<ApplicationUser, ApplicationRole, Guid, IdentityUserClaim<Guid>, ApplicationUserRole,
-        IdentityUserLogin<Guid>, IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>
+public class AuthenticationDbContext(DbContextOptions<AuthenticationDbContext> options)
+        : IdentityDbContext<ApplicationUser, ApplicationRole, Guid, IdentityUserClaim<Guid>, ApplicationUserRole,
+        IdentityUserLogin<Guid>, IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>(options)
 {
     public DbSet<Tenant> Tenants { get; set; }
-
-    public AuthenticationDbContext(DbContextOptions<AuthenticationDbContext> options) : base(options)
-    {
-    }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

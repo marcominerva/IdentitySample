@@ -14,22 +14,11 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace IdentitySample.BusinessLayer.Services;
 
-public class IdentityService : IIdentityService
+public class IdentityService(IOptions<JwtSettings> jwtSettingsOptions,
+    UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
+    IUserService userService) : IIdentityService
 {
-    private readonly JwtSettings jwtSettings;
-    private readonly UserManager<ApplicationUser> userManager;
-    private readonly SignInManager<ApplicationUser> signInManager;
-    private readonly IUserService userService;
-
-    public IdentityService(IOptions<JwtSettings> jwtSettingsOptions,
-        UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
-        IUserService userService)
-    {
-        jwtSettings = jwtSettingsOptions.Value;
-        this.userManager = userManager;
-        this.signInManager = signInManager;
-        this.userService = userService;
-    }
+    private readonly JwtSettings jwtSettings = jwtSettingsOptions.Value;
 
     public async Task<AuthResponse> LoginAsync(LoginRequest request)
     {
@@ -40,19 +29,19 @@ public class IdentityService : IIdentityService
         }
 
         var user = await userManager.FindByNameAsync(request.UserName);
-        _ = await userManager.UpdateSecurityStampAsync(user);
+        await userManager.UpdateSecurityStampAsync(user);
 
         var userRoles = await userManager.GetRolesAsync(user);
 
         var claims = new List<Claim>()
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, request.UserName),
-            new Claim(ClaimTypes.GivenName, user.FirstName),
-            new Claim(ClaimTypes.Surname, user.LastName ?? string.Empty),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.GroupSid, user.TenantId?.ToString() ?? string.Empty),
-            new Claim(ClaimTypes.SerialNumber, user.SecurityStamp.ToString())
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.Name, request.UserName),
+            new(ClaimTypes.GivenName, user.FirstName),
+            new(ClaimTypes.Surname, user.LastName ?? string.Empty),
+            new(ClaimTypes.Email, user.Email),
+            new(ClaimTypes.GroupSid, user.TenantId?.ToString() ?? string.Empty),
+            new(ClaimTypes.SerialNumber, user.SecurityStamp.ToString())
         }.Union(userRoles.Select(role => new Claim(ClaimTypes.Role, role))).ToList();
 
         var loginResponse = CreateToken(claims);
@@ -60,7 +49,7 @@ public class IdentityService : IIdentityService
         user.RefreshToken = loginResponse.RefreshToken;
         user.RefreshTokenExpirationDate = DateTime.UtcNow.AddMinutes(jwtSettings.RefreshTokenExpirationMinutes);
 
-        _ = await userManager.UpdateAsync(user);
+        await userManager.UpdateAsync(user);
 
         return loginResponse;
     }
@@ -73,7 +62,7 @@ public class IdentityService : IIdentityService
             return null;
         }
 
-        _ = await userManager.UpdateSecurityStampAsync(user);
+        await userManager.UpdateSecurityStampAsync(user);
         var identity = userService.GetIdentity();
 
         UpdateClaim(ClaimTypes.NameIdentifier, user.Id.ToString());
@@ -89,7 +78,7 @@ public class IdentityService : IIdentityService
         user.RefreshToken = loginResponse.RefreshToken;
         user.RefreshTokenExpirationDate = DateTime.UtcNow.AddMinutes(jwtSettings.RefreshTokenExpirationMinutes);
 
-        _ = await userManager.UpdateAsync(user);
+        await userManager.UpdateAsync(user);
 
         return loginResponse;
 
@@ -123,7 +112,7 @@ public class IdentityService : IIdentityService
             dbUser.RefreshToken = loginResponse.RefreshToken;
             dbUser.RefreshTokenExpirationDate = DateTime.UtcNow.AddMinutes(jwtSettings.RefreshTokenExpirationMinutes);
 
-            _ = await userManager.UpdateAsync(dbUser);
+            await userManager.UpdateAsync(dbUser);
 
             return loginResponse;
         }
@@ -134,7 +123,7 @@ public class IdentityService : IIdentityService
     private AuthResponse CreateToken(IList<Claim> claims)
     {
         var audienceClaim = claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Aud);
-        _ = claims.Remove(audienceClaim);
+        claims.Remove(audienceClaim);
 
         var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecurityKey));
         var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);

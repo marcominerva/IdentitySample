@@ -5,20 +5,9 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace IdentitySample.BusinessLayer.Services;
 
-public class TenantService : ITenantService
+public class TenantService(IUserService userService, AuthenticationDbContext authenticationDbContext,
+    IMemoryCache cache) : ITenantService
 {
-    private readonly IUserService userService;
-    private readonly AuthenticationDbContext authenticationDbContext;
-    private readonly IMemoryCache cache;
-
-    public TenantService(IUserService userService, AuthenticationDbContext authenticationDbContext,
-        IMemoryCache cache)
-    {
-        this.userService = userService;
-        this.authenticationDbContext = authenticationDbContext;
-        this.cache = cache;
-    }
-
     public Tenant GetTenant()
     {
         var tenants = cache.GetOrCreate("tenants", entry =>

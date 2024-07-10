@@ -49,7 +49,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     services.AddSingleton<IClaimsTransformation, ClaimsTransformer>();
 }
 
-void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+void Configure(WebApplication app, IWebHostEnvironment env)
 {
     app.UseHttpsRedirection();
 
@@ -64,8 +64,5 @@ void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     app.UseAuthentication();
     app.UseAuthorization();
 
-    app.UseEndpoints(endpoints =>
-    {
-        endpoints.MapControllers();
-    });
+    app.MapControllers();
 }

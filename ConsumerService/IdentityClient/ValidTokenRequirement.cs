@@ -2,6 +2,4 @@
 
 namespace IdentityClient;
 
-public class ValidTokenRequirement : IAuthorizationRequirement
-{
-}
+public class ValidTokenRequirement : IAuthorizationRequirement;

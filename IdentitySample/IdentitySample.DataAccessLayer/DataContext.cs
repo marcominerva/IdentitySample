@@ -6,16 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IdentitySample.DataAccessLayer;
 
-public class DataContext : DbContext
+public class DataContext(DbContextOptions<DataContext> options, IUserService userService) : DbContext(options)
 {
     public DbSet<Product> Products { get; set; }
 
-    private readonly Guid tenantId;
-
-    public DataContext(DbContextOptions<DataContext> options, IUserService userService) : base(options)
-    {
-        tenantId = userService.GetTenantId();
-    }
+    private readonly Guid tenantId = userService.GetTenantId();
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

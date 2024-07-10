@@ -6,17 +6,8 @@ using Entities = IdentitySample.DataAccessLayer.Entities;
 
 namespace IdentitySample.BusinessLayer.Services;
 
-public class ProductService : IProductService
+public class ProductService(DataContext dataContext, IUserService userService) : IProductService
 {
-    private readonly DataContext dataContext;
-    private readonly IUserService userService;
-
-    public ProductService(DataContext dataContext, IUserService userService)
-    {
-        this.dataContext = dataContext;
-        this.userService = userService;
-    }
-
     public async Task<IEnumerable<Product>> GetAsync()
     {
         var products = await dataContext.Products.OrderBy(p => p.Name)

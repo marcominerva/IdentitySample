@@ -5,14 +5,8 @@ namespace IdentitySample.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AuthenticatedController : ControllerBase
+public class AuthenticatedController(IAuthenticatedService authenticatedService) : ControllerBase
 {
-    private readonly IAuthenticatedService authenticatedService;
-
-    public AuthenticatedController(IAuthenticatedService authenticatedService)
-    {
-        this.authenticatedService = authenticatedService;
-    }
 
     /// <summary>
     /// Open the AuthenticatedService.RunAsync method to see the correct way to retrieve the user name from a Business Layer Service,

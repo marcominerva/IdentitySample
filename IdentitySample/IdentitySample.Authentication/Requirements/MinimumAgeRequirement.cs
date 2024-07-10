@@ -2,12 +2,7 @@
 
 namespace IdentitySample.Authentication.Requirements;
 
-public class MinimumAgeRequirement : IAuthorizationRequirement
+public class MinimumAgeRequirement(int minimumAge) : IAuthorizationRequirement
 {
-    public int MinimumAge { get; }
-
-    public MinimumAgeRequirement(int minimumAge)
-    {
-        MinimumAge = minimumAge;
-    }
+    public int MinimumAge { get; } = minimumAge;
 }

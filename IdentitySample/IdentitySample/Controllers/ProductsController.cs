@@ -7,15 +7,8 @@ namespace IdentitySample.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ProductsController : ControllerBase
+public class ProductsController(IProductService productService) : ControllerBase
 {
-    private readonly IProductService productService;
-
-    public ProductsController(IProductService productService)
-    {
-        this.productService = productService;
-    }
-
     [HttpGet]
     public async Task<IActionResult> GetList()
     {

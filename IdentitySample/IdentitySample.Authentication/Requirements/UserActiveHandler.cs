@@ -16,8 +16,7 @@ public class UserActiveHandler(UserManager<ApplicationUser> userManager) : Autho
             var user = await userManager.FindByIdAsync(userId.ToString());
             var securityStamp = context.User.GetClaimValue(ClaimTypes.SerialNumber);
 
-            if (user != null && user.LockoutEnd.GetValueOrDefault() <= DateTimeOffset.UtcNow
-                && securityStamp == user.SecurityStamp)
+            if (user != null && user.LockoutEnd.GetValueOrDefault() <= DateTimeOffset.UtcNow && securityStamp == user.SecurityStamp)
             {
                 context.Succeed(requirement);
             }
